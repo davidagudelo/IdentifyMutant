@@ -1,6 +1,9 @@
 apply plugin: 'org.springframework.boot'
 
 dependencies {
+	compile 'org.reactivecommons.utils:object-mapper:0.1.0'
+	implementation project(':mongo-repository')
+	implementation project(':reactive-web')
     implementation project(':model')
     implementation project(':usecase')
     compile 'org.springframework.boot:spring-boot-starter'
