@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8082
 spring:
   application:
     name: "IdentifyMutant"
@@ -11,6 +11,8 @@ spring:
       path: "/h2"
   profiles:
     include: null
-  data:
-    mongodb:
-      uri: "mongodb://localhost:27017/test"
+
+
+dynamodb:
+  tbl-name:
+    human: human

@@ -1,15 +1,23 @@
 package co.com.xmen.usecase.verify;
 
-import lombok.RequiredArgsConstructor;
+import co.com.xmen.model.dynamo.HumanGateway;
+import co.com.xmen.model.response.HumantResult;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-@RequiredArgsConstructor
+
 public class UseCasesVerify {
 
+    private final HumanGateway humanGateway;
+
+    public UseCasesVerify(HumanGateway humanGateway) {
+        this.humanGateway = humanGateway;
+    }
+
     public Mono<Boolean> verifyHuman(List<String> dna) {
-       return listToMatriz(dna).flatMap(d -> verifyMutant(d));
+       return listToMatriz(dna).flatMap(d -> verifyMutant(d))
+               .flatMap(s -> humanGateway.saveRecord(dna,s));
     }
 
 
@@ -100,5 +108,8 @@ public class UseCasesVerify {
         return ret;
     }
 
+    public Mono<HumantResult> list() {
+       return humanGateway.getlist();
     }
+}
 
