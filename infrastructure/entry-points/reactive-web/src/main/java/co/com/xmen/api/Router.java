@@ -13,11 +13,11 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 @Configuration
 public class Router {
 
-
+    //End point para los servicios de validar humano y verificar los resultados
     @Bean
     public RouterFunction<ServerResponse> routerFunction(Handler handler) {
         return route(POST("/mutant"), handler::analyzeHuman)
-                .andRoute(GET("/list"),handler::list);
+                .andRoute(GET("/stats"),handler::list);
 
         }
     }

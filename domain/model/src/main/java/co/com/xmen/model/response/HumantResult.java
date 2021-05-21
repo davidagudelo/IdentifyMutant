@@ -7,7 +7,8 @@ import lombok.Data;
 @Data
 public class HumantResult {
 
-    private int mutantDna;
-    private int total;
+    private int count_mutant_dna;
+    private int count_human_dna;
+    private double ratio;
 
 }

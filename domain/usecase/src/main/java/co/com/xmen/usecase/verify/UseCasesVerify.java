@@ -6,7 +6,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.List;
 
-
+//Clase  de negocio con la logica para el analisis de DNA
 public class UseCasesVerify {
 
     private final HumanGateway humanGateway;
@@ -15,15 +15,23 @@ public class UseCasesVerify {
         this.humanGateway = humanGateway;
     }
 
+    //
     public Mono<Boolean> verifyHuman(List<String> dna) {
        return listToMatriz(dna).flatMap(d -> verifyMutant(d))
                .flatMap(s -> humanGateway.saveRecord(dna,s));
     }
 
+    public Mono<HumantResult> list() {
+        return humanGateway.getlist();
+    }
 
+    //Se encarga de convertir la lista a una matriz de carcteres
     private Mono<char[][]>  listToMatriz(List<String> dna) {
+        //se declara la matriz
         char[][] matrix = new char[dna.size()][dna.get(0).length()];
+        //recorremos la lista
         for (int i = 0; i < dna.size(); i++) {
+            //se convierte la lista en una matriz de caracteres
             char[] charArray = dna.get(i).toCharArray();
             for (int j = 0; j < charArray.length; j++) {
                 matrix[i][j] = charArray[j];
@@ -32,19 +40,19 @@ public class UseCasesVerify {
         return Mono.just(matrix);
     }
 
+    //Valida si el ADN es mutante o no
     private Mono<Boolean> verifyMutant(char[][] d) {
         int result =0;
+        //Recorremos la matriz
         for (int x=0; x < d.length; x++) {
             for (int y=0; y < d[x].length; y++) {
                 char valor = d[x][y];
-
-                result = result + ValidarHorizontal(x, y, d, valor);
-                result = result + ValidarVertical(x, y, d, valor);
-                result = result + ValidarOblicua(x, y, d, valor);
+                //Se valida la cadena de ADN en los 3 vectores (Horizontal - Vertical - Oblicuo)
+                result = ValidarHorizontal(x, y, d, valor) + ValidarVertical(x, y, d, valor) +  ValidarOblicua(x, y, d, valor);
             }
         }
-        if (result > 2){
-            System.out.println(result);
+        //validamos la cantidad de cadenas q tiene
+        if (result > 1){
             return Mono.just(true);
         }else
         {
@@ -52,10 +60,11 @@ public class UseCasesVerify {
         }
     }
 
-    public static int ValidarHorizontal(int x, int y, char[][] matrix, char valor){
+    private static int ValidarHorizontal(int x, int y, char[][] matrix, char valor){
         Boolean result = true;
         int contador = 0;
         int ret= 0;
+        //Recoremos las combinaciones de manera horizontal
         while (y < matrix[x].length-1 && result){
             y ++;
             result = valor == matrix[x][y];
@@ -71,10 +80,11 @@ public class UseCasesVerify {
     }
 
 
-    public static int ValidarVertical(int x, int y, char[][] matrix, char valor) {
+    private static int ValidarVertical(int x, int y, char[][] matrix, char valor) {
         Boolean result = true;
         int contador = 0;
         int ret = 0;
+        //Recoremos las combinaciones de manera vertical
         while (x < matrix.length - 1 && result) {
             x++;
             result = valor == matrix[x][y];
@@ -90,10 +100,11 @@ public class UseCasesVerify {
         return ret;
     }
 
-    public static int ValidarOblicua(int x, int y, char[][] matrix, char valor) {
+    private static int ValidarOblicua(int x, int y, char[][] matrix, char valor) {
         Boolean result = true;
         int contador = 0;
         int ret = 0;
+        //Recoremos las combinaciones de manera oblicua
         while (x < matrix.length-1 && y < matrix[x].length-1 && result){
             x ++;
             y ++;
@@ -108,8 +119,6 @@ public class UseCasesVerify {
         return ret;
     }
 
-    public Mono<HumantResult> list() {
-       return humanGateway.getlist();
-    }
+
 }
 

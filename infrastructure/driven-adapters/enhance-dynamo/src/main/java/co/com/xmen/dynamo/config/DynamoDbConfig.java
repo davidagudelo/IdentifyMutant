@@ -9,13 +9,14 @@ import org.springframework.context.annotation.Configuration;
 import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedAsyncClient;
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient;
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClientBuilder;
-
+//Configuración para establecer los bean de conexión contra dynamo
 @Configuration
 public class DynamoDbConfig {
 
 	@Value("${aws.dynamodb.endpoint:}")
 	private String dynamoDbEndPointUrl;
 
+	//Se crea la conexión a dynamo
 	@Bean
 	public DynamoDbAsyncClient getDynamoDbAsyncClient() {
 		DynamoDbAsyncClientBuilder builder = DynamoDbAsyncClient.builder();

@@ -14,7 +14,7 @@ import software.amazon.awssdk.services.dynamodb.model.ScanRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+//Adaptador para realizar las operaciones contra la base de datos
 @Component
 public class DynamoRepository implements HumanGateway {
 
@@ -29,8 +29,10 @@ public class DynamoRepository implements HumanGateway {
         this.humanDynamoDbAsyncTable = enhancedAsyncClient.table(dynamoDbTable, TableSchema.fromBean(Human.class));
     }
 
+    //Metodo para guardar las cadenas de ADN en la base de datos
     @Override
     public Mono<Boolean> saveRecord(List<String> dna, boolean state) {
+        //Se crea el objeto Human y se le agregan las propiedades adn y state para diferenciar si es un mutante o no
         Human human = new Human();
         String cadena = dna.stream().map(Object::toString).collect(Collectors.joining(" "));
         human.setAdn(cadena);
@@ -40,13 +42,15 @@ public class DynamoRepository implements HumanGateway {
                     .thenReturn(Boolean.TRUE);
     }
 
+
+    //Metodo para objener el estado de los registros
     @Override
     public Mono<HumantResult> getlist() {
         ScanRequest scanRequest = ScanRequest.builder().tableName(dynamoDbTable).build();
 
+
        return Mono.fromFuture(Client.scan(scanRequest)).map(scanResponse -> {
-            return HumantResult.builder()
-                    .total(scanResponse.scannedCount())
+            return HumantResult.builder().count_human_dna(scanResponse.scannedCount())
                     .build();
        });
      }
