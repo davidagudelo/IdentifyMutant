@@ -68,7 +68,7 @@ public class DynamoRepository implements HumanGateway {
         return  HumantResult.builder()
                 .count_mutant_dna(scanResponse.count())
                 .count_human_dna(scanResponse.scannedCount())
-                .ratio(scanResponse.count()/scanResponse.scannedCount())
+                .ratio(scanResponse.count()*100/scanResponse.scannedCount())
                 .build();
     }
 

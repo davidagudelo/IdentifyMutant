@@ -14,7 +14,6 @@ import java.util.List;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringJUnit4ClassRunner.class)
 public class UseCasesVerifyTest {
 
     @Mock

@@ -68,7 +68,6 @@ public class RouterTest {
 
     @Test
     public void testMutant(){
-
         webTestClient
                 .post()
                 .uri(uriBuilder -> uriBuilder
@@ -79,7 +78,6 @@ public class RouterTest {
                 .exchange()
                 .expectStatus()
                 .is4xxClientError();
-
     }
 
 

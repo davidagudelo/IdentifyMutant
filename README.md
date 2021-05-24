@@ -6,27 +6,50 @@ Se requieren exponer dos capacidades las cuales permitan, primero identificar si
 esta información se debe guardar en una base de datos dynamo, la segunda capidad debe consultar la base de datos 
 para traer información del total de ADN analisados
 
-## Domain
+## Proyecto 
 
-Es el módulo más interno de la arquitectura, pertenece a la capa del dominio y encapsula la lógica y reglas del negocio mediante modelos y entidades del dominio.
+Proyecto realizado con arquitectura limpia y spring boot webflux.
 
-## Usecases
+##Carpeta Application
 
-Este módulo gradle perteneciente a la capa del dominio, implementa los casos de uso del sistema, define lógica de aplicación y reacciona a las invocaciones desde el módulo de entry points, orquestando los flujos hacia el módulo de entities.
+proyecto  app-service con el main aplicación y los bean para los casos de uso.
 
+##Carpeta Domain 
 
-### Driven Adapters
+**Model:**
+proyecto con todos los modelos y las interfaces de la solución 
 
-Los driven adapter representan implementaciones externas a nuestro sistema, como lo son conexiones a servicios rest,
-soap, bases de datos, lectura de archivos planos, y en concreto cualquier origen y fuente de datos con la que debamos
-interactuar.
+**UseCase:**
+proyecto con la  logica de negocio con la solución del problema 
 
-### Entry Points
+##Carpeta Infraestructura 
 
-Los entry points representan los puntos de entrada de la aplicación o el inicio de los flujos de negocio.
+**driven-adapter**
+Proyecto que implementa la interface con las operaciones del bynamoDb
 
-## Application
+**entry-points**
+proyecto que expone dos operaciones :
+    - Mutant
+    - stats 
 
-Este módulo es el más externo de la arquitectura, es el encargado de ensamblar los distintos módulos, resolver las dependencias y crear los beans de los casos de use (UseCases) de forma automática, inyectando en éstos instancias concretas de las dependencias declaradas. Además inicia la aplicación (es el único módulo del proyecto donde encontraremos la función “public static void main(String[] args)”.
+Pasos para ejecutar localmente:
 
-**Los beans de los casos de uso se disponibilizan automaticamente gracias a un '@ComponentScan' ubicado en esta capa.**
+   1. Descargar la imagen de docker dynamoDB local con el siguiente comando 
+   "docker pull amazon/dynamodb-local" debemos esperar que se complete la descarga para 
+   subir el contenedor con el comando "docker run -p 8000:8000 amazon/dynamodb-local".
+   
+   2. se debe crear la tabla en la base de datos con el siguiente comando 
+      "aws dynamodb create-table \
+       --table-name human \
+      --attribute-definitions AttributeName=adn,AttributeType=S \
+      --key-schema AttributeName=adn,KeyType=HASH \
+      --provisioned-throughput ReadCapacityUnits=5,WriteCapacityUnits=5 \
+      --endpoint-url http://localhost:8000"
+      
+   3. Clonar el repositorio y lo importamos al Ide de preferencia 
+   
+   4. Abrir el aplication.yaml y edicar la propiedad "aws.dynamodb.endpoint:" se le debe asignar el valor
+   http://localhost:8000
+   
+   5. Correr el proyecto 
+
