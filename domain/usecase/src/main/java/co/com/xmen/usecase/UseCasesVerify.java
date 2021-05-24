@@ -1,4 +1,4 @@
-package co.com.xmen.usecase.verify;
+package co.com.xmen.usecase;
 
 import co.com.xmen.model.dynamo.HumanGateway;
 import co.com.xmen.model.response.HumantResult;

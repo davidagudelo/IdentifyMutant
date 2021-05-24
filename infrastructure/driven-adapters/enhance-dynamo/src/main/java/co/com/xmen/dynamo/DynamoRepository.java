@@ -26,6 +26,7 @@ public class DynamoRepository implements HumanGateway {
     private final DynamoDbAsyncClient Client;
     private final String dynamoDbTable;
 
+
     public DynamoRepository(DynamoDbAsyncClient Client, DynamoDbEnhancedAsyncClient enhancedAsyncClient,
                             @Value("${dynamodb.tbl-name.human}") String dynamoDbTable) {
         this.Client = Client;

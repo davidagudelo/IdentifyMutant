@@ -2,7 +2,7 @@ package co.com.xmen.api;
 
 import co.com.xmen.model.request.RequestMutant;
 import co.com.xmen.model.response.HumantResult;
-import co.com.xmen.usecase.verify.UseCasesVerify;
+import co.com.xmen.usecase.UseCasesVerify;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;

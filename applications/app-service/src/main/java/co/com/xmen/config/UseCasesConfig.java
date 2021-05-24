@@ -1,7 +1,7 @@
 package co.com.xmen.config;
 
 import co.com.xmen.model.dynamo.HumanGateway;
-import co.com.xmen.usecase.verify.UseCasesVerify;
+import co.com.xmen.usecase.UseCasesVerify;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
