@@ -2,6 +2,7 @@ package co.com.xmen.usecase;
 
 import co.com.xmen.model.dynamo.HumanGateway;
 import co.com.xmen.model.response.HumantResult;
+import org.assertj.core.util.VisibleForTesting;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -15,18 +16,19 @@ public class UseCasesVerify {
         this.humanGateway = humanGateway;
     }
 
-    //
+    //Verificamos si el adn es humano o mutante y guarda la respuesta en dynamo
     public Mono<Boolean> verifyHuman(List<String> dna) {
-       return listToMatriz(dna).flatMap(d -> verifyMutant(d))
-               .flatMap(s -> humanGateway.saveRecord(dna,s));
+        char[][] matrix=  listToMatriz(dna);
+        return  verifyMutant(matrix).flatMap(s -> humanGateway.saveRecord(dna,s));
     }
 
+    //Lista los resultados de la tabla
     public Mono<HumantResult> list() {
         return humanGateway.getlist();
     }
 
     //Se encarga de convertir la lista a una matriz de carcteres
-    private Mono<char[][]>  listToMatriz(List<String> dna) {
+    public char[][]  listToMatriz(List<String> dna) {
         //se declara la matriz
         char[][] matrix = new char[dna.size()][dna.get(0).length()];
         //recorremos la lista
@@ -37,20 +39,20 @@ public class UseCasesVerify {
                 matrix[i][j] = charArray[j];
             }
         }
-        return Mono.just(matrix);
+        return matrix;
     }
 
     //Valida si el ADN es mutante o no
-    private Mono<Boolean> verifyMutant(char[][] d) {
+    public Mono<Boolean> verifyMutant(char[][] d) {
         int result =0;
         //Recorremos la matriz
         for (int x=0; x < d.length; x++) {
             for (int y=0; y < d[x].length; y++) {
                 char valor = d[x][y];
                 //Se valida la cadena de ADN en los 3 vectores (Horizontal - Vertical - Oblicuo)
-                result = result + ValidarHorizontal(x, y, d, valor) ;
-                result =  result +ValidarVertical(x, y, d, valor) ;
-                result = result + ValidarOblicua(x, y, d, valor);
+                result = result + validarHorizontal(x, y, d, valor) ;
+                result =  result +validarVertical(x, y, d, valor) ;
+                result = result + validarOblicua(x, y, d, valor);
             }
         }
         //validamos la cantidad de cadenas q tiene
@@ -62,7 +64,7 @@ public class UseCasesVerify {
         }
     }
 
-    private static int ValidarHorizontal(int x, int y, char[][] matrix, char valor){
+    public static int validarHorizontal(int x, int y, char[][] matrix, char valor){
         Boolean result = true;
         int contador = 0;
         int ret= 0;
@@ -81,8 +83,7 @@ public class UseCasesVerify {
         return ret;
     }
 
-
-    private static int ValidarVertical(int x, int y, char[][] matrix, char valor) {
+    public static int validarVertical(int x, int y, char[][] matrix, char valor) {
         Boolean result = true;
         int contador = 0;
         int ret = 0;
@@ -102,7 +103,7 @@ public class UseCasesVerify {
         return ret;
     }
 
-    private static int ValidarOblicua(int x, int y, char[][] matrix, char valor) {
+    public static int validarOblicua(int x, int y, char[][] matrix, char valor) {
         Boolean result = true;
         int contador = 0;
         int ret = 0;
