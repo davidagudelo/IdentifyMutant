@@ -53,3 +53,17 @@ Pasos para ejecutar localmente:
    
    5. Correr el proyecto 
 
+
+##Diagrama de arquitectura
+
+![Clean Architecture](https://imagenbucke.s3.us-east-2.amazonaws.com/arquitectura.png)
+
+##Diagrama de Flujo Mutant
+
+![Clean Architecture](https://imagenbucke.s3.us-east-2.amazonaws.com/mutant.png)
+
+##Diagrama de Flujo stats
+
+![Clean Architecture](https://imagenbucke.s3.us-east-2.amazonaws.com/stats.png)
+
+
