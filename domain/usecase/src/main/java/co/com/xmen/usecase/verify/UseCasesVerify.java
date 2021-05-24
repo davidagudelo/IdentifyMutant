@@ -48,7 +48,9 @@ public class UseCasesVerify {
             for (int y=0; y < d[x].length; y++) {
                 char valor = d[x][y];
                 //Se valida la cadena de ADN en los 3 vectores (Horizontal - Vertical - Oblicuo)
-                result = ValidarHorizontal(x, y, d, valor) + ValidarVertical(x, y, d, valor) +  ValidarOblicua(x, y, d, valor);
+                result = result + ValidarHorizontal(x, y, d, valor) ;
+                result =  result +ValidarVertical(x, y, d, valor) ;
+                result = result + ValidarOblicua(x, y, d, valor);
             }
         }
         //validamos la cantidad de cadenas q tiene

@@ -9,14 +9,18 @@ import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 import software.amazon.awssdk.enhanced.dynamodb.*;
 import software.amazon.awssdk.services.dynamodb.DynamoDbAsyncClient;
-import software.amazon.awssdk.services.dynamodb.model.ScanRequest;
+import software.amazon.awssdk.services.dynamodb.model.*;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 //Adaptador para realizar las operaciones contra la base de datos
 @Component
 public class DynamoRepository implements HumanGateway {
+
 
     private final DynamoDbAsyncTable<Human> humanDynamoDbAsyncTable;
     private final DynamoDbAsyncClient Client;
@@ -37,23 +41,54 @@ public class DynamoRepository implements HumanGateway {
         String cadena = dna.stream().map(Object::toString).collect(Collectors.joining(" "));
         human.setAdn(cadena);
         human.setStatus(state);
-            return Mono.fromFuture(humanDynamoDbAsyncTable.putItem( human))
-                    .subscribeOn(Schedulers.elastic())
-                    .thenReturn(Boolean.TRUE);
+        return Mono.fromFuture(humanDynamoDbAsyncTable.putItem( human))
+                .subscribeOn(Schedulers.elastic())
+                .thenReturn(state);
     }
 
 
-    //Metodo para objener el estado de los registros
+
     @Override
     public Mono<HumantResult> getlist() {
-        ScanRequest scanRequest = ScanRequest.builder().tableName(dynamoDbTable).build();
+        //Se crea un scan sobre la tabla human
+        ScanRequest scanRequest = ScanRequest.builder().tableName(dynamoDbTable).scanFilter(Filter())
+                .build();
 
+        return Mono.fromFuture(Client.scan(scanRequest)).map(scanResponse -> {
+            return averageHuman(scanResponse);
+        });
 
-       return Mono.fromFuture(Client.scan(scanRequest)).map(scanResponse -> {
-            return HumantResult.builder().count_human_dna(scanResponse.scannedCount())
-                    .build();
-       });
-     }
     }
+
+    //Se construye el objeto Humant Resullt
+    private HumantResult averageHuman(ScanResponse scanResponse) {
+        //Se obtiene el scaner del filtro y de toda la tabla para saber
+        // cantida de registros y cantidad de muntantes
+        return  HumantResult.builder()
+                .count_mutant_dna(scanResponse.count())
+                .count_human_dna(scanResponse.scannedCount())
+                .ratio(scanResponse.count()/scanResponse.scannedCount())
+                .build();
+    }
+
+
+    public Map<String, Condition> Filter() {
+        //Se  crea una lista de los valores de los atributos y se le agrega el valor
+        //True para identificar a los mutantes
+        List<AttributeValue> attributeValuesList = new ArrayList<>();
+        attributeValuesList.add(AttributeValue.builder().bool(Boolean.TRUE).build());
+
+        //Se crea una condicion para filtar todos los valores en true del campo status
+        Map<String, Condition> filterValue = new HashMap<>();
+        filterValue.put("status", Condition.builder().comparisonOperator(ComparisonOperator.EQ.toString())
+                .attributeValueList(attributeValuesList).build());
+        //Se retorna el fitlro
+        return filterValue;
+    }
+
+}
+
+
+
 
 
